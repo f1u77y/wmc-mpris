@@ -294,3 +294,9 @@ mpris2_update_player_properties(JsonNode *arg_node) {
         g_free(name);
     }
 }
+
+void
+mpris2_update_name(JsonNode *arg_node) {
+    const gchar *value = json_node_get_string(arg_node);
+    media_player2_set_identity(core, value);
+}

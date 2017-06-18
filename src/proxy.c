@@ -35,6 +35,8 @@ listen_stdio(gpointer G_GNUC_UNUSED user_data) {
             mpris2_update_volume(arg_node);
         } else if (!g_strcmp0(cmd, "properties")) {
             mpris2_update_player_properties(arg_node);
+        } else if (!g_strcmp0(cmd, "name")) {
+            mpris2_update_name(arg_node);
         }
     next_iteration:
         if (parser) {
