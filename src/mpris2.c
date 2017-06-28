@@ -76,7 +76,7 @@ on_set_position(MediaPlayer2Player *player,
                 gint64 position_us,
                 gpointer G_GNUC_UNUSED user_data)
 {
-    BEGIN_COMMAND("setPositon");
+    BEGIN_COMMAND("setPosition");
     json_builder_begin_object(builder);
     json_builder_set_member_name(builder, "position");
     json_builder_add_double_value(builder, position_us / 1000.0);
