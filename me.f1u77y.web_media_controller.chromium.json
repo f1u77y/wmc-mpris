@@ -4,6 +4,6 @@
     "path": "@EXECUTABLE_PATH@",
     "type": "stdio",
     "allowed_origins": [
-        "chrome-extension://kjndbobloaknjmidmooiaofjhgbnebom/"
+        "chrome-extension://igadifnhekeechfmhdmmfebcblcaiphh/"
     ]
 }
