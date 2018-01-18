@@ -1,6 +1,7 @@
 #include <glib.h>
 #include <string.h>
 #include <ctype.h>
+#include <json-glib/json-glib.h>
 
 gchar *
 camelcase_to_dashes(const gchar *s) {
@@ -22,5 +23,14 @@ capitalize(const gchar *s) {
     if (strlen(result) > 0) {
         result[0] = toupper(result[0]);
     }
+    return result;
+}
+
+gchar *
+json_to_string(JsonNode *root, gboolean is_pretty) {
+    JsonGenerator *gen = json_generator_new();
+    json_generator_set_root(gen, root);
+    json_generator_set_pretty(gen, is_pretty);
+    gchar *result = json_generator_to_data(gen, NULL);
     return result;
 }

@@ -1,4 +1,5 @@
 #include "message.h"
+#include "util.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,7 +80,7 @@ message_read() {
     if (!raw_message) {
         return NULL;
     }
-    JsonParser *parser = json_parser_new_immutable();
+    JsonParser *parser = json_parser_new();
     gsize size = 0;
     gconstpointer data  = g_bytes_get_data(raw_message, &size);
     if (!json_parser_load_from_data(parser, data, size, NULL)) {

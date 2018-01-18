@@ -203,6 +203,62 @@ add_string_to_builder(JsonArray G_GNUC_UNUSED *array,
     g_variant_builder_add(builder, "s", value);
 }
 
+static void
+add_value_to_metadata_builder(JsonObject *serialized_metadata,
+                              const gchar *key,
+                              JsonNode *value_node,
+                              gpointer user_data)
+{
+    GVariantBuilder *builder = (GVariantBuilder *)user_data;
+    if (!g_strcmp0(key, "artist")) {
+        GVariantBuilder artist;
+        g_variant_builder_init(&artist, G_VARIANT_TYPE("as"));
+
+        if (JSON_NODE_HOLDS_VALUE(value_node)) {
+            const gchar *value = json_node_get_string(value_node);
+            g_variant_builder_add(&artist, "s", value);
+        } else if (JSON_NODE_HOLDS_ARRAY(value_node)) {
+            JsonArray *array = json_node_get_array(value_node);
+            json_array_foreach_element(array,
+                                       add_string_to_builder,
+                                       &artist);
+        }
+        g_variant_builder_add(builder, "{sv}",
+                "xesam:artist",
+                g_variant_builder_end(&artist));
+    } else if (!g_strcmp0(key, "title")) {
+        const gchar *value = json_node_get_string(value_node);
+        g_variant_builder_add(builder, "{sv}",
+                "xesam:title",
+                g_variant_new_string(value));
+    } else if (!g_strcmp0(key, "album")) {
+        const gchar *value = json_node_get_string(value_node);
+        g_variant_builder_add(builder, "{sv}",
+                "xesam:album",
+                g_variant_new_string(value));
+    } else if (!g_strcmp0(key, "url")) {
+        const gchar *value = json_node_get_string(value_node);
+        g_variant_builder_add(builder, "{sv}",
+                "xesam:url",
+                g_variant_new_string(value));
+    } else if (!g_strcmp0(key, "length")) {
+        gint64 value = json_node_get_int(value_node);
+        g_variant_builder_add(builder, "{sv}",
+                "mpris:length",
+                g_variant_new_int64(value * 1000));
+    } else if (!g_strcmp0(key, "artUrl")) {
+        const gchar *value = json_node_get_string(value_node);
+        g_variant_builder_add(builder, "{sv}",
+                "mpris:artUrl",
+                g_variant_new_string(value));
+    } else if (!g_strcmp0(key, "trackId")) {
+        const gchar *value = json_node_get_string(value_node);
+        g_variant_builder_add(builder, "{sv}",
+                "mpris:trackid",
+                g_variant_new_object_path(value));
+    }
+}
+
 void
 mpris2_update_metadata(JsonNode *argument)
 {
@@ -211,60 +267,9 @@ mpris2_update_metadata(JsonNode *argument)
     GVariantBuilder builder;
     g_variant_builder_init(&builder, G_VARIANT_TYPE("a{sv}"));
 
-    JsonObjectIter iter;
-    const gchar *key;
-    JsonNode *value_node;
-
-    json_object_iter_init(&iter, serialized_metadata);
-    while (json_object_iter_next(&iter, &key, &value_node)) {
-        if (!g_strcmp0(key, "artist")) {
-            GVariantBuilder artist;
-            g_variant_builder_init(&artist, G_VARIANT_TYPE("as"));
-
-            if (JSON_NODE_HOLDS_VALUE(value_node)) {
-                const gchar *value = json_node_get_string(value_node);
-                g_variant_builder_add(&artist, "s", value);
-            } else if (JSON_NODE_HOLDS_ARRAY(value_node)) {
-                JsonArray *array = json_node_get_array(value_node);
-                json_array_foreach_element(array,
-                                           add_string_to_builder,
-                                           &artist);
-            }
-            g_variant_builder_add(&builder, "{sv}",
-                                  "xesam:artist",
-                                  g_variant_builder_end(&artist));
-        } else if (!g_strcmp0(key, "title")) {
-            const gchar *value = json_node_get_string(value_node);
-            g_variant_builder_add(&builder, "{sv}",
-                                  "xesam:title",
-                                  g_variant_new_string(value));
-        } else if (!g_strcmp0(key, "album")) {
-            const gchar *value = json_node_get_string(value_node);
-            g_variant_builder_add(&builder, "{sv}",
-                                  "xesam:album",
-                                  g_variant_new_string(value));
-        } else if (!g_strcmp0(key, "url")) {
-            const gchar *value = json_node_get_string(value_node);
-            g_variant_builder_add(&builder, "{sv}",
-                                  "xesam:url",
-                                  g_variant_new_string(value));
-        } else if (!g_strcmp0(key, "length")) {
-            gint64 value = json_node_get_int(value_node);
-            g_variant_builder_add(&builder, "{sv}",
-                                  "mpris:length",
-                                  g_variant_new_int64(value * 1000));
-        } else if (!g_strcmp0(key, "artUrl")) {
-            const gchar *value = json_node_get_string(value_node);
-            g_variant_builder_add(&builder, "{sv}",
-                                  "mpris:artUrl",
-                                  g_variant_new_string(value));
-        } else if (!g_strcmp0(key, "trackId")) {
-            const gchar *value = json_node_get_string(value_node);
-            g_variant_builder_add(&builder, "{sv}",
-                                  "mpris:trackid",
-                                  g_variant_new_object_path(value));
-        }
-    }
+    json_object_foreach_member(serialized_metadata,
+                               add_value_to_metadata_builder,
+                               (void *)(&builder));
 
     GVariant *metadata = g_variant_builder_end(&builder);
     media_player2_player_set_metadata(player, metadata);
@@ -278,21 +283,23 @@ mpris2_update_playback_status(JsonNode *arg_node) {
     g_free(cap);
 }
 
+static void
+update_single_player_property(JsonObject *root,
+                              const gchar* key,
+                              JsonNode *value_node,
+                              gpointer G_GNUC_UNUSED user_data)
+{
+    gchar *name = camelcase_to_dashes(key);
+    g_object_set(player,
+                 name, json_node_get_boolean(value_node),
+                 NULL);
+    g_free(name);
+}
+
 void
 mpris2_update_player_properties(JsonNode *arg_node) {
     JsonObject *root = json_node_get_object(arg_node);
-    JsonObjectIter iter;
-    const gchar *key;
-    JsonNode *value_node;
-
-    json_object_iter_init(&iter, root);
-    while (json_object_iter_next(&iter, &key, &value_node)) {
-        gchar *name = camelcase_to_dashes(key);
-        g_object_set(player,
-                     name, json_node_get_boolean(value_node),
-                     NULL);
-        g_free(name);
-    }
+    json_object_foreach_member(root, update_single_player_property, NULL);
 }
 
 void
