@@ -85,7 +85,7 @@ install(
 find_package (PkgConfig)
 pkg_check_modules (GLIB2 REQUIRED glib-2.0)
 pkg_check_modules (GIO_UNIX REQUIRED gio-unix-2.0)
-pkg_check_modules (JSON_GLIB REQUIRED json-glib-1.0)
+pkg_check_modules (JSON_GLIB REQUIRED json-glib-1.0>=1.2)
 
 target_include_directories (${PROJECT_NAME} PUBLIC
   include
