@@ -7,8 +7,10 @@
 #include "generated/mpris-core.h"
 #include "generated/mpris-player.h"
 
+#include <unistd.h>
 #include <math.h>
 #include <glib.h>
+#include <glib/gprintf.h>
 #include <json-glib/json-glib.h>
 
 static MediaPlayer2 *core = NULL;
@@ -151,9 +153,11 @@ mpris2_init() {
         return FALSE;
     }
 
-    guint owner_id = g_bus_own_name_on_connection(bus, SERVICE_NAME,
+    gchar* service_name = g_strdup_printf("%s.pid%d", SERVICE_NAME, (int)getpid());
+    guint owner_id = g_bus_own_name_on_connection(bus, service_name,
                                                   G_BUS_NAME_OWNER_FLAGS_NONE,
                                                   NULL, NULL, NULL, NULL);
+    g_free(service_name);
 
     mpris2_core_init();
     mpris2_player_init();
