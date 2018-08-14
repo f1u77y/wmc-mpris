@@ -21,7 +21,7 @@ void
 mpris2_update_metadata(JsonNode *argument);
 
 void
-mpris2_update_player_properties(JsonNode *argument);
+mpris2_update_controls_info(JsonNode *argument);
 
 void
 mpris2_update_name(JsonNode *argument);

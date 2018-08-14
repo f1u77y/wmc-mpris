@@ -288,7 +288,7 @@ mpris2_update_playback_status(JsonNode *arg_node) {
 }
 
 static void
-update_single_player_property(JsonObject *root,
+update_single_controls_property(JsonObject *root,
                               const gchar* key,
                               JsonNode *value_node,
                               gpointer G_GNUC_UNUSED user_data)
@@ -301,9 +301,9 @@ update_single_player_property(JsonObject *root,
 }
 
 void
-mpris2_update_player_properties(JsonNode *arg_node) {
+mpris2_update_controls_info(JsonNode *arg_node) {
     JsonObject *root = json_node_get_object(arg_node);
-    json_object_foreach_member(root, update_single_player_property, NULL);
+    json_object_foreach_member(root, update_single_controls_property, NULL);
 }
 
 void
