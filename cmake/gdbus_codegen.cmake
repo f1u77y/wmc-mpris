@@ -28,7 +28,7 @@ function (generate_gdbus_code)
   add_custom_command (
     OUTPUT "${ARG_OUTPUT}.c" "${ARG_OUTPUT}.h"
     COMMAND ${GDBUS_CODEGEN} --generate-c-code "${ARG_OUTPUT}"
-                             --interface "${ARG_INTERFACE}"
+                             --interface-prefix "${ARG_INTERFACE}"
                              ${GDBUS_OPTIONS}
                              "${ARG_INPUT}"
     MAIN_DEPENDENCY "${ARG_INPUT}"
