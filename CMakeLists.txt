@@ -5,6 +5,19 @@ option (ENABLE_FIREFOX "Install manifest for Firefox" ON)
 option (ENABLE_CHROME "Install manifest for Google Chrome" ON)
 option (ENABLE_CHROMIUM "Install manifest for Chromium" ON)
 
+option (INSTALL_FOR_CURRENT_USER "Install for current user only" OFF)
+
+if (INSTALL_FOR_CURRENT_USER)
+  set (CHROMIUM_MANIFEST_DESTINATION "$ENV{HOME}/.config/chromium/NativeMessagingHosts")
+  set (CHROME_MANIFEST_DESTINATION "$ENV{HOME}/.config/google-chrome/NativeMessagingHosts")
+  set (FIREFOX_MANIFEST_DESTINATION "$ENV{HOME}/.mozilla/native-messaging hosts")
+else ()
+  set (CHROMIUM_MANIFEST_DESTINATION "/etc/chromium/native-messaging-hosts")
+  set (CHROME_MANIFEST_DESTINATION "/etc/opt/chrome/native-messaging-hosts")
+  set (FIREFOX_MANIFEST_DESTINATION "/usr/lib/mozilla/native-messaging-hosts")
+endif ()
+
+
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 include (gdbus_codegen)
 
@@ -38,6 +51,10 @@ add_executable (${PROJECT_NAME}
   )
 set_property (TARGET ${PROJECT_NAME} PROPERTY C_STANDARD 99)
 
+if (INSTALL_FOR_CURRENT_USER)
+  set (CMAKE_INSTALL_PREFIX "$ENV{HOME}/.local")
+endif ()
+
 set (DEST_BINARY_DIR bin)
 set (EXECUTABLE_PATH "${CMAKE_INSTALL_PREFIX}/${DEST_BINARY_DIR}/${PROJECT_NAME}")
 
@@ -49,7 +66,7 @@ if (ENABLE_CHROMIUM)
   )
   install (
     FILES "${CMAKE_BINARY_DIR}/manifest/chromium/me.f1u77y.web_media_controller.json"
-    DESTINATION /etc/chromium/native-messaging-hosts
+    DESTINATION "${CHROMIUM_MANIFEST_DESTINATION}"
     )
 endif ()
 
@@ -61,7 +78,7 @@ if (ENABLE_CHROME)
   )
   install (
     FILES "${CMAKE_BINARY_DIR}/manifest/chrome/me.f1u77y.web_media_controller.json"
-    DESTINATION /etc/opt/chrome/native-messaging-hosts
+    DESTINATION "${CHROME_MANIFEST_DESTINATION}"
     )
 endif ()
 
@@ -73,7 +90,7 @@ if (ENABLE_FIREFOX)
   )
   install (
     FILES "${CMAKE_BINARY_DIR}/manifest/firefox/me.f1u77y.web_media_controller.json"
-    DESTINATION /usr/lib/mozilla/native-messaging-hosts
+    DESTINATION "${FIREFOX_MANIFEST_DESTINATION}"
     )
 endif ()
 
