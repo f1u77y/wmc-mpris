@@ -1,6 +1,10 @@
 # MPRIS proxy for Web Media Controller
 
 ## Installation
+### Dependencies
+- `glib2`
+- `json-glib`
+- Corresponding header packages for building from source if your distro uses them (eg. Debian/Ubuntu)
 ### Building from source
 ```
 $ git clone https://github.com/f1u77y/wmc-mpris.git
