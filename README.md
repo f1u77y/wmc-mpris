@@ -22,7 +22,6 @@ No other actions required.
 - [AUR](https://aur.archlinux.org/packages/web-media-controller-mpris-git/)
 - Feel free to create packages for other distros and add them to this list
 
-
 ## Usage
 You need to install this program and
 [an extension](https://github.com/f1u77y/web-media-controller/releases) for you browser.
