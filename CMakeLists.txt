@@ -6,15 +6,15 @@ option (ENABLE_CHROME "Install manifest for Google Chrome" ON)
 option (ENABLE_CHROMIUM "Install manifest for Chromium" ON)
 
 option (INSTALL_FOR_CURRENT_USER "Install for current user only" OFF)
+set (CHROMIUM_MANIFEST_DESTINATION "/etc/chromium/native-messaging-hosts" CACHE STRING "Choromium's manifest installation location")
+set (CHROME_MANIFEST_DESTINATION "/etc/opt/chrome/native-messaging-hosts" CACHE STRING "Chrome's manifest installation location")
+set (FIREFOX_MANIFEST_DESTINATION "/usr/lib/mozilla/native-messaging-hosts" CACHE STRING "Firefox's manifest installation location")
+set (CMAKE_INSTALL_PREFIX "/usr/local" CACHE STRING "Install prefix")
 
 if (INSTALL_FOR_CURRENT_USER)
   set (CHROMIUM_MANIFEST_DESTINATION "$ENV{HOME}/.config/chromium/NativeMessagingHosts")
   set (CHROME_MANIFEST_DESTINATION "$ENV{HOME}/.config/google-chrome/NativeMessagingHosts")
   set (FIREFOX_MANIFEST_DESTINATION "$ENV{HOME}/.mozilla/native-messaging-hosts")
-else ()
-  set (CHROMIUM_MANIFEST_DESTINATION "/etc/chromium/native-messaging-hosts")
-  set (CHROME_MANIFEST_DESTINATION "/etc/opt/chrome/native-messaging-hosts")
-  set (FIREFOX_MANIFEST_DESTINATION "/usr/lib/mozilla/native-messaging-hosts")
 endif ()
 
 
