@@ -8,13 +8,8 @@
 #include <glib.h>
 #include <json-glib/json-glib.h>
 
-static GMutex stdin_lock;
-static GMutex stdout_lock;
-
 void
 messages_init() {
-    g_mutex_init(&stdin_lock);
-    g_mutex_init(&stdout_lock);
     freopen(NULL, "rb", stdin);
     freopen(NULL, "wb", stdout);
 }
@@ -23,7 +18,6 @@ static GBytes *
 raw_message_read() {
     guchar *buf = NULL;
     GBytes *result = NULL;
-    g_mutex_lock(&stdin_lock);
 
     unsigned char size_bytes[4];
     if (!fread(size_bytes, 4, 1, stdin)) {
@@ -43,13 +37,11 @@ raw_message_read() {
 
  out:
     g_free(buf);
-    g_mutex_unlock(&stdin_lock);
     return result;
 }
 
 static gboolean
 raw_message_write(GBytes *message) {
-    g_mutex_lock(&stdout_lock);
     gboolean result = TRUE;
 
     gsize size = 0;
@@ -70,7 +62,6 @@ raw_message_write(GBytes *message) {
     fflush(stdout);
 
  out:
-    g_mutex_unlock(&stdout_lock);
     return result;
 }
 
