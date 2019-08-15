@@ -128,6 +128,7 @@ mpris2_player_init() {
     media_player2_player_set_minimum_rate(player, 1.0);
     media_player2_player_set_maximum_rate(player, 1.0);
     media_player2_player_set_rate(player, 1.0);
+    media_player2_player_set_can_control(player, TRUE);
 
     g_signal_connect(player, "handle-play", G_CALLBACK(on_play), NULL);
     g_signal_connect(player, "handle-pause", G_CALLBACK(on_pause), NULL);
