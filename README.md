@@ -29,6 +29,7 @@ And then `make install` won't need `sudo`.
 
 ### Packages
 - [AUR](https://aur.archlinux.org/packages/web-media-controller-mpris-git/)
+- [Nix Packages Collection](https://github.com/NixOS/nixpkgs/tree/master/pkgs/applications/misc/web-media-controller)
 - Feel free to create packages for other distros and add them to this list
 
 ## Usage
