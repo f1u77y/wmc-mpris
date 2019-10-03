@@ -37,6 +37,11 @@ listen_stdio(gpointer G_GNUC_UNUSED user_data) {
             mpris2_update_controls_info(arg_node);
         } else if (!g_strcmp0(cmd, "name")) {
             mpris2_update_name(arg_node);
+        } else if (!g_strcmp0(cmd, "ping")) {
+            JsonNode* response = json_node_alloc();
+            response = json_node_init_string(response, "pong");
+            message_write(response);
+            json_node_free(response);
         }
     next_iteration:
         if (parser) {
