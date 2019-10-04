@@ -27,6 +27,15 @@ make
 
 And then `make install` won't need `sudo`.
 
+Alternatively, you could build with `meson` (will be the only option in near future):
+```
+$ meson build --buildtype release
+$ ninja -C build
+```
+
+And then install with `sudo ninja -C build install` and uninstall with
+`sudo ninja -C build uninstall`.
+
 ### Packages
 - [AUR](https://aur.archlinux.org/packages/web-media-controller-mpris-git/)
 - [Nix Packages Collection](https://github.com/NixOS/nixpkgs/tree/master/pkgs/applications/misc/web-media-controller)
