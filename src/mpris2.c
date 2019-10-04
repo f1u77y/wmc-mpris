@@ -4,8 +4,8 @@
 #include "proxy.h"
 #include "util.h"
 
-#include "generated/mpris-core.h"
-#include "generated/mpris-player.h"
+#include "mpris-core.h"
+#include "mpris-player.h"
 
 #include <unistd.h>
 #include <math.h>
