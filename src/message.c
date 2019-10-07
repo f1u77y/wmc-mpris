@@ -23,10 +23,7 @@ raw_message_read() {
     if (!fread(size_bytes, 4, 1, stdin)) {
         goto out;
     }
-    guint32 size = 0;
-    for (int i = 0; i < 4; ++i) {
-        size |= (guint32)size_bytes[i] << (8 * i);
-    }
+    guint32 size = *(guint32 *)size_bytes;
 
     buf = g_new(guchar, size + 1);
     buf[size] = 0;
@@ -47,9 +44,7 @@ raw_message_write(GBytes *message) {
     gsize size = 0;
     gconstpointer data = g_bytes_get_data(message, &size);
     unsigned char size_bytes[4];
-    for (int i = 0; i < 4; ++i) {
-        size_bytes[i] = (size >> (8 * i)) & 0xFF;
-    }
+    *(guint32 *)size_bytes = size;
 
     if (!fwrite(size_bytes, 4, 1, stdout)) {
         result = FALSE;
