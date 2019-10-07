@@ -8,7 +8,8 @@
 #include <json-glib/json-glib.h>
 
 static gpointer
-listen_stdio(gpointer G_GNUC_UNUSED user_data) {
+listen_stdio(gpointer G_GNUC_UNUSED user_data)
+{
     JsonParser *parser = NULL;
     do {
         parser = message_read();
@@ -53,13 +54,15 @@ listen_stdio(gpointer G_GNUC_UNUSED user_data) {
 }
 
 gboolean
-proxy_listen_commands() {
+proxy_listen_commands()
+{
     GThread *listen_thread = g_thread_new("listen-stdio", listen_stdio, NULL);
     g_thread_unref(listen_thread);
     return TRUE;
 }
 
 gboolean
-proxy_send_command(JsonNode *node) {
+proxy_send_command(JsonNode *node)
+{
     return message_write(node);
 }

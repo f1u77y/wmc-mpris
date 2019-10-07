@@ -26,7 +26,8 @@ static MediaPlayer2Player *player = NULL;
 
 
 static JsonBuilder *
-make_command(const gchar *command) {
+make_command(const gchar *command)
+{
     JsonBuilder *builder = json_builder_new();
     json_builder_begin_object(builder);
     json_builder_set_member_name(builder, "command");
@@ -111,7 +112,8 @@ on_quit(MediaPlayer2 *core,
 }
 
 static void
-mpris2_core_init() {
+mpris2_core_init()
+{
     core = media_player2_skeleton_new();
 
     media_player2_set_can_quit(core, TRUE);
@@ -122,7 +124,8 @@ mpris2_core_init() {
 }
 
 static void
-mpris2_player_init() {
+mpris2_player_init()
+{
     player = media_player2_player_skeleton_new();
 
     media_player2_player_set_minimum_rate(player, 1.0);
@@ -144,7 +147,8 @@ mpris2_player_init() {
 
 
 gboolean
-mpris2_init() {
+mpris2_init()
+{
     GError *error = NULL;
     GDBusConnection *bus = g_bus_get_sync(G_BUS_TYPE_SESSION, NULL, &error);
 
@@ -183,14 +187,16 @@ mpris2_init() {
 }
 
 void
-mpris2_update_position(JsonNode *argument) {
+mpris2_update_position(JsonNode *argument)
+{
     gdouble position = json_node_get_double(argument);
     gint64 position_us = round(position * 1000);
     media_player2_player_set_position(player, position_us);
 }
 
 void
-mpris2_update_volume(JsonNode *argument) {
+mpris2_update_volume(JsonNode *argument)
+{
     gdouble volume = json_node_get_double(argument);
     g_signal_handlers_block_by_func(player, G_CALLBACK(on_volume_changed), NULL);
     media_player2_player_set_volume(player, volume);
@@ -281,7 +287,8 @@ mpris2_update_metadata(JsonNode *argument)
 }
 
 void
-mpris2_update_playback_status(JsonNode *arg_node) {
+mpris2_update_playback_status(JsonNode *arg_node)
+{
     const gchar *value = json_node_get_string(arg_node);
     gchar *cap = capitalize(value);
     media_player2_player_set_playback_status(player, cap);
@@ -302,13 +309,15 @@ update_single_controls_property(JsonObject *root,
 }
 
 void
-mpris2_update_controls_info(JsonNode *arg_node) {
+mpris2_update_controls_info(JsonNode *arg_node)
+{
     JsonObject *root = json_node_get_object(arg_node);
     json_object_foreach_member(root, update_single_controls_property, NULL);
 }
 
 void
-mpris2_update_name(JsonNode *arg_node) {
+mpris2_update_name(JsonNode *arg_node)
+{
     const gchar *value = json_node_get_string(arg_node);
     media_player2_set_identity(core, value);
 }

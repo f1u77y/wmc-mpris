@@ -9,13 +9,15 @@
 #include <json-glib/json-glib.h>
 
 void
-messages_init() {
+messages_init()
+{
     freopen(NULL, "rb", stdin);
     freopen(NULL, "wb", stdout);
 }
 
 static GBytes *
-raw_message_read() {
+raw_message_read()
+{
     guchar *buf = NULL;
     GBytes *result = NULL;
 
@@ -38,7 +40,8 @@ raw_message_read() {
 }
 
 static gboolean
-raw_message_write(GBytes *message) {
+raw_message_write(GBytes *message)
+{
     gboolean result = TRUE;
 
     gsize size = 0;
@@ -61,7 +64,8 @@ raw_message_write(GBytes *message) {
 }
 
 JsonParser *
-message_read() {
+message_read()
+{
     GBytes *raw_message = raw_message_read();
     if (!raw_message) {
         return NULL;
@@ -77,7 +81,8 @@ message_read() {
 }
 
 gboolean
-message_write(JsonNode *node) {
+message_write(JsonNode *node)
+{
     gchar *data = json_to_string(node, FALSE);
     GBytes *raw_message = g_bytes_new(data, strlen(data));
     gboolean result = raw_message_write(raw_message);

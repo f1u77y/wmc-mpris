@@ -8,7 +8,8 @@
 
 GMainLoop *loop;
 
-int main() {
+int main()
+{
     if (!mpris2_init()) {
         g_error("Error at mpris2 initialization, aborting");
     }
