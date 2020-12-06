@@ -1,3 +1,7 @@
+# This project is now abandoned due to its redundancy
+
+See https://github.com/f1u77y/web-media-controller#this-project-is-now-abandoned-due-to-its-redundancy
+
 # MPRIS proxy for Web Media Controller
 
 ## Installation
